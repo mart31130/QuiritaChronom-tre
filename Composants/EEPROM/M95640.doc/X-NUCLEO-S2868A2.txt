@@ -1,0 +1,2 @@
+Autre carte fille modem qui a aussi la même EEPROM que la IDB05A1
+Interressante car l'exemple dans la librairie utilise l'EEPROM

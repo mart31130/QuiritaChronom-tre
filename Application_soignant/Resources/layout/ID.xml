@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Application Soignant"
+        android:textSize="30sp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:layout_marginBottom="24dp"/>
+
+     <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="nom de l'appareil:"
+        android:textSize="30sp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:layout_marginBottom="24dp"
+        android:id="@+id/device_name"/>
+
+    <EditText
+        android:id="@+id/Id_quiri"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Numéro de chambre"
+        android:backgroundTint="@color/colorAccent"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/Valider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Valider"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/colorPrimary"
+        android:layout_marginBottom="16dp"/>
+</LinearLayout>
+    

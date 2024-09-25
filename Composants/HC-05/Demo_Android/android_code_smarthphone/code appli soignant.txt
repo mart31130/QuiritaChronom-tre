@@ -1,0 +1,204 @@
+using Android.App;
+using Android.Bluetooth;
+using Android.Content;
+using Android.OS;
+using Android.Widget;
+using Java.Util;
+using Newtonsoft.Json;
+using System;
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace application_soignant
+{
+    [Activity(Label = "Bluetooth")]
+    public class BluetoothActivity : Activity
+    {
+        // Instanciation des variables
+        BluetoothAdapter bluetoothAdapter;
+        BluetoothDevice device;
+        BluetoothSocket socket;
+
+        protected override void OnCreate(Bundle savedInstanceState)
+        {
+            base.OnCreate(savedInstanceState);
+            SetContentView(Resource.Layout.Bluetooth_activity);
+            Button button = FindViewById<Button>(Resource.Id.Bluetooth_list);
+            button.Click += RechercheBluetooth_Click;
+
+            // Configuration du Bluetooth
+            var bluetoothManager = (BluetoothManager)GetSystemService(Context.BluetoothService);
+            bluetoothAdapter = bluetoothManager?.Adapter;
+            if (bluetoothAdapter == null)
+            {
+                Toast.MakeText(this, "Le Bluetooth n'est pas supporté sur cet appareil", ToastLength.Long).Show();
+            }
+            else if (!bluetoothAdapter.IsEnabled)
+            {
+                Intent btintent = new Intent(BluetoothAdapter.ActionRequestEnable);
+                StartActivityForResult(btintent, 1);
+            }
+            else
+            {
+                Task.Run(BluetoothConnexion);
+            }
+        }
+
+        private void RechercheBluetooth_Click(object sender, EventArgs e)
+        {
+            BluetoothConnexion();
+        }
+
+        private async void BluetoothConnexion()
+        {
+            await Task.Run(() =>
+            {
+                try
+                {
+                    // Recherche des appareils Bluetooth disponibles
+                    var allDevices = bluetoothAdapter.BondedDevices;
+                    if (allDevices.Count > 0)
+                    {
+                        // Convertir la liste d'appareils en une liste de noms pour l'affichage
+                        List<string> deviceNames = new List<string>();
+                        foreach (var device in allDevices)
+                        {
+                            deviceNames.Add(device.Name);
+                        }
+
+                        // Afficher les appareils dans une liste déroulante (Spinner)
+                        RunOnUiThread(() =>
+                        {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                            builder.SetTitle("Choisir un appareil Bluetooth");
+                            builder.SetItems(deviceNames.ToArray(), (sender, args) =>
+                            {
+                                int selectedDeviceIndex = args.Which;
+                                BluetoothDevice selectedDevice = allDevices.ElementAt(selectedDeviceIndex);
+
+                                // Maintenant, vous pouvez vous connecter à l'appareil sélectionné
+                                ConnectToDevice(selectedDevice);
+                            });
+                            builder.Show();
+                        });
+                    }
+                    else
+                    {
+                        RunOnUiThread(() =>
+                        {
+                            Toast.MakeText(this, "Aucun appareil Bluetooth trouvé.", ToastLength.Long).Show();
+                        });
+                    }
+                }
+                catch (IOException ex)
+                {
+                    RunOnUiThread(() =>
+                    {
+                        Toast.MakeText(this, "Erreur lors de la connexion Bluetooth: " + ex.Message, ToastLength.Long).Show();
+                    });
+                }
+            });
+        }
+
+        private void ConnectToDevice(BluetoothDevice device)
+        {
+            try
+            {
+                // Créer un socket RFCOMM avec le périphérique Bluetooth sélectionné
+                socket = device.CreateRfcommSocketToServiceRecord(UUID.FromString("00001101-0000-1000-8000-00805F9B34FB"));
+
+                // Connecter le socket de manière asynchrone
+                socket.ConnectAsync().ContinueWith(task =>
+                {
+                    if (task.IsCompleted && !task.IsFaulted)
+                    {
+                        RunOnUiThread(() =>
+                        {
+                            Toast.MakeText(this, "Connexion Bluetooth établie avec succès!", ToastLength.Long).Show();
+                        });
+
+                        // Maintenant que la connexion est établie, vous pouvez envoyer et recevoir des données via le socket
+                        Task.Run(() => ReceiveSeuils(socket));
+                        Task.Run(() => SendSeuils(socket, new Seuils { Agitation = 5, Bruit = 80 }));
+                    }
+                    else
+                    {
+                        RunOnUiThread(() =>
+                        {
+                            Toast.MakeText(this, "Erreur lors de la connexion Bluetooth.", ToastLength.Long).Show();
+                        });
+                    }
+                });
+            }
+            catch (IOException ex)
+            {
+                RunOnUiThread(() =>
+                {
+                    Toast.MakeText(this, "Erreur lors de la connexion Bluetooth: " + ex.Message, ToastLength.Long).Show();
+                });
+            }
+        }
+
+       
+
+ public class Seuils
+{
+    public int Agitation { get; set; }
+    public int Bruit { get; set; }
+}
+
+// Envoyer les seuils au format JSON via Bluetooth
+private async Task SendSeuils(BluetoothSocket socket, Seuils seuils)
+{
+    try
+    {
+        // Sérialiser les seuils en JSON
+        string json = JsonConvert.SerializeObject(seuils);
+
+        // Envoyer les données JSON via Bluetooth
+        byte[] bytes = Encoding.ASCII.GetBytes(json);
+        await socket.OutputStream.WriteAsync(bytes, 0, bytes.Length);
+
+        RunOnUiThread(() =>
+        {
+            Toast.MakeText(this, "Seuils envoyés : " + json, ToastLength.Long).Show();
+        });
+    }
+    catch (IOException ex)
+    {
+        RunOnUiThread(() =>
+        {
+            Toast.MakeText(this, "Erreur dans l'envoi des seuils : " + ex.Message, ToastLength.Long).Show();
+        });
+    }
+}
+
+// Recevoir les seuils au format JSON via Bluetooth
+private async Task ReceiveSeuils(BluetoothSocket socket)
+{
+    try
+    {
+        byte[] buffer = new byte[1024];
+        int bytesRead = await socket.InputStream.ReadAsync(buffer, 0, buffer.Length);
+        if (bytesRead > 0)
+        {
+            // Désérialiser les données JSON en objets Seuils
+            string receivedJson = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+            Seuils receivedSeuils = JsonConvert.DeserializeObject<Seuils>(receivedJson);
+
+            // ici pour afficher les seuils reçus
+            RunOnUiThread(() =>
+            {
+                Toast.MakeText(this, "Seuils reçus : Agitation = " + receivedSeuils.Agitation + ", Bruit = " + receivedSeuils.Bruit, ToastLength.Long).Show();
+            });
+        }
+    }
+    catch (IOException ex)
+    {
+        RunOnUiThread(() =>
+        {
+            Toast.MakeText(this, "Erreur dans la réception des seuils : " + ex.Message, ToastLength.Long).Show();
+        });
+    }
+}

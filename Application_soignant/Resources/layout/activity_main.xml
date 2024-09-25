@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Application Soignant"
+        android:background="?android:attr/selectableItemBackground"
+        android:textSize="30sp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:layout_marginBottom="24dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:paddingEnd="10dp"
+        android:text= "Changer le nom du quiritachronométre"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:background="@android:drawable/edit_text"
+        android:id="@+id/ChangeID"
+        android:textSize="16sp"/>
+
+    <ProgressBar
+        android:id="@+id/battery"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="359.0dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:max="100"
+        android:progress="100"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="135.0dp"
+            android:layout_height="64.5dp"
+            android:src="@drawable/batterie"
+            android:contentDescription="description"
+            android:layout_marginRight="0.0dp"
+            android:layout_marginBottom="0.0dp"
+            android:id="@+id/imageBatterie" />
+        <TextView
+            android:id="@+id/Etatbatterie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:paddingEnd="10dp"
+            android:text="Etat batterie :"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Alarmes"
+        android:background="@drawable/button_style"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/colorPrimary"
+        android:id="@+id/Alarme" />
+
+    <ProgressBar
+        android:id="@+id/sd"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:max="100"
+        android:progress="100"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="135.0dp"
+            android:layout_height="41.5dp"
+            android:src="@drawable/sd"
+            android:contentDescription="description"
+            android:layout_marginRight="0.0dp"
+            android:layout_marginBottom="0.0dp"
+            android:id="@+id/imageSD" />
+        <TextView
+            android:id="@+id/etatsd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:paddingEnd="10dp"
+            android:text="Etat carte: "
+            android:textSize="16sp" />
+
+    </LinearLayout>
+</LinearLayout>
+    

@@ -1,0 +1,16 @@
+Protocole de communication entre Quirita et application soignant :
+
+voir la valeur seuil de l'accéléromètre : ~a
+configurer la valeur seuil de l'accéléromètre à 124 (exemple) : ~a 124
+
+voir la valeur seuil du son : ~m
+configurer la valeur du son à 231 (exemple) : ~m 231
+
+voir l'identifiant du QUIRITA : ~ i
+configurer l'identifiant du Quirita par le nom A3 : ~m A3
+
+récupérer le niveau de batterie : ~b
+  
+récupérer l'état de la carte SD : ~s
+
+

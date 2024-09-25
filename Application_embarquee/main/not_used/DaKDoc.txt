@@ -1,0 +1,11 @@
+Les fsm dérivent de EVClasse
+Chaque fois qu'un objet EVClasse utilise une ressource matérielle unique, il faut le penser en singleton et ne le créer qu'une seule fois
+Dans la version 0.1 initiale on a 2 objets dérivés de EVClasse
+	ButtonIHM qui fonctionne par interruption et détecte les appuits long et courts
+	Spy qui affiche les évènements qui passent dans la machine
+	
+EVmanager est le noyau du système
+
+EventList est une enum qui déclare les évènements qui traversent le système
+
+	

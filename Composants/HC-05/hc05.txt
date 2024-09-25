@@ -1,0 +1,21 @@
+hc05
+
+
+notes de lecture glanées ici et là
+
+Anonyme : Je vois que dans certains tutos, la pin EN est connectée à une pin arduino. Je ne vois pas très bien l'intérêt car pour passer en mode AT, il faut mettre cette broche à 0 avant de mettre le module sous tension (au moins sur les 2 modules que j'ai)
+---------------------
+Blog eskimon.f
+Passer en "mode commande"
+
+Pour que le module décide que ce qu’il reçoit doit être traité comme un ordre de configuration et non comme un bout de texte à transmettre, il faudra le placer en mode "commande". Dans ce mode, plus aucun texte ne sera transmis. Afin d’établir cette communication, il existe deux méthodes. La première consiste à démarrer le module avec sa broche "Key" à l’état HAUT (reliée au 5V). La LED présente sur le module devrait alors clignoter rapidement, signalant que le module est prêt à recevoir des ordres AT. Dans cette configuration, tous les messages envoyés seront interprétés comme des commandes et le seul moyen d’en sortir sera de redémarrer le module (en supprimant son alimentation). Attention, dans ce mode la connexion s’effectue à une vitesse de 38400 bauds ! N’oubliez pas de le prendre en compte dans votre programme. Je déconseille cette première méthode qui est finalement assez contraignante.
+
+Une deuxième méthode, plus souple, sera d’utiliser la broche "Key" dans notre programme. Il faut donc dans un premiers temps déclarer cette dernière en sortie et la mettre à l’état bas par défaut. Elle sera connectée à la pin 12 pour ma part. Dans cette situation, la vitesse restera à 9600 bauds.
+
+const int key = 12;
+void setup() {
+    pinMode(key, OUTPUT);
+    pinMode(key, LOW);
+}
+
+Maintenant, chaque fois que vous souhaiterez passer dans le mode "commande" vous devrez mettre cette broche à l’état haut et la maintenir dans cet état tant que vous envoyez des commandes. 
